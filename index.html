@@ -12,7 +12,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Support Sumit Wankhede BJP</title>
 
-  <!-- Open Graph meta tags for social media preview -->
   <meta property="og:title" content="Support Sumit Wankhede 2024">
   <meta property="og:description" content="Vote for your bright future">
   <meta property="og:image" content="https://dhirensawalakhe.github.io/live/thumbnail.jpg">
@@ -39,7 +38,7 @@
       width: 100%;
       max-width: 500px;
       aspect-ratio: 5 / 6;
-      background-image: url('template.jpg');
+      background-image: url('https://dhirensawalakhe.github.io/live/template.jpg?v=1');
       background-size: cover;
       background-position: center;
       margin-bottom: 20px;
@@ -166,7 +165,7 @@
       canvas.height = 1200;
 
       const templateImage = new Image();
-      templateImage.src = 'https://dhirensawalakhe.github.io/live/template.jpg';
+      templateImage.src = 'https://dhirensawalakhe.github.io/live/template.jpg?v=1';
 
       templateImage.onload = function() {
         context.drawImage(templateImage, 0, 0, canvas.width, canvas.height);
@@ -175,7 +174,6 @@
         userImage.src = uploadedImageSrc;
 
         userImage.onload = function() {
-          // Coordinates and size matching the orange box dimensions
           const boxX = 1000 * 0.065;
           const boxY = 1200 * 0.195;
           const boxWidth = 1000 * 0.25;
@@ -205,11 +203,6 @@
 
             document.getElementById('loadingMessage').style.display = 'none';
           }, 'image/png');
-        };
-
-        userImage.onerror = function() {
-          console.error('Failed to load the cropped user image');
-          document.getElementById('loadingMessage').style.display = 'none';
         };
       };
 
