@@ -175,8 +175,16 @@
         userImage.src = uploadedImageSrc;
 
         userImage.onload = function() {
-          context.drawImage(userImage, 50, 300, 370, 320);
+          // Coordinates and dimensions for the orange box
+          const boxX = canvas.width * 0.065; // 6.5% from the left
+          const boxY = canvas.height * 0.195; // 19.5% from the top
+          const boxWidth = canvas.width * 0.25; // 25% of canvas width
+          const boxHeight = canvas.height * 0.26; // 26% of canvas height
 
+          // Draw the cropped image in the orange box area
+          context.drawImage(userImage, boxX, boxY, boxWidth, boxHeight);
+
+          // Convert canvas to an image and trigger download
           canvas.toBlob(async (blob) => {
             const file = new File([blob], 'template_with_image.png', { type: 'image/png' });
             const link = document.createElement('a');
@@ -184,6 +192,7 @@
             link.download = 'template_with_image.png';
             link.click();
 
+            // Mobile sharing
             if (navigator.share) {
               try {
                 await navigator.share({
