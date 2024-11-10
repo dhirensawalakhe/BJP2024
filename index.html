@@ -15,11 +15,11 @@
   <!-- Open Graph meta tags for social media preview -->
   <meta property="og:title" content="Support Sumit Wankhede 2024">
   <meta property="og:description" content="Vote for your bright future">
-  <meta property="og:image" content="https://dhirensawalakhe.github.io/BJP2024/thumbnail.jpg">
-  <meta property="og:url" content="https://dhirensawalakhe.github.io/2024/">
+  <meta property="og:image" content="https://dhirensawalakhe.github.io/live/thumbnail.jpg">
+  <meta property="og:url" content="https://dhirensawalakhe.github.io/live/">
   <meta property="og:type" content="website">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:image" content="https://dhirensawalakhe.github.io/BJP2024/thumbnail.jpg">
+  <meta name="twitter:image" content="https://dhirensawalakhe.github.io/live/thumbnail.jpg">
 
   <link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css" rel="stylesheet">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
@@ -166,7 +166,7 @@
       canvas.height = 1200;
 
       const templateImage = new Image();
-      templateImage.src = 'https://dhirensawalakhe.github.io/BJP2024/template.jpg';
+      templateImage.src = 'https://dhirensawalakhe.github.io/live/template.jpg';
 
       templateImage.onload = function() {
         context.drawImage(templateImage, 0, 0, canvas.width, canvas.height);
@@ -175,7 +175,13 @@
         userImage.src = uploadedImageSrc;
 
         userImage.onload = function() {
-          context.drawImage(userImage, 50, 300, 370, 320);
+          // Coordinates and size matching the orange box dimensions
+          const boxX = 1000 * 0.065;
+          const boxY = 1200 * 0.195;
+          const boxWidth = 1000 * 0.25;
+          const boxHeight = 1200 * 0.26;
+
+          context.drawImage(userImage, boxX, boxY, boxWidth, boxHeight);
 
           canvas.toBlob(async (blob) => {
             const file = new File([blob], 'template_with_image.png', { type: 'image/png' });
