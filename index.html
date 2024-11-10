@@ -169,6 +169,7 @@
       templateImage.src = 'https://dhirensawalakhe.github.io/BJP2024/template.jpg';
 
       templateImage.onload = function() {
+        // Ensure the template image fits the canvas
         context.drawImage(templateImage, 0, 0, canvas.width, canvas.height);
 
         const userImage = new Image();
@@ -181,11 +182,7 @@
           const boxWidth = canvas.width * 0.25; // 25% of canvas width
           const boxHeight = canvas.height * 0.26; // 26% of canvas height
 
-          // Clear the canvas (important for proper redrawing)
-          context.clearRect(0, 0, canvas.width, canvas.height);
-
-          // Redraw the template and the cropped image in the right position
-          context.drawImage(templateImage, 0, 0, canvas.width, canvas.height);
+          // Correctly scale and place the user image inside the orange box
           context.drawImage(userImage, boxX, boxY, boxWidth, boxHeight);
 
           // Convert canvas to an image and trigger download
