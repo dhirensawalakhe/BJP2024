@@ -169,7 +169,10 @@
       templateImage.src = 'https://dhirensawalakhe.github.io/BJP2024/template.jpg';
 
       templateImage.onload = function() {
-        // Draw the user's cropped image first so that it appears behind the orange box
+        // Draw the template image
+        context.drawImage(templateImage, 0, 0, canvas.width, canvas.height);
+
+        // Draw the user's cropped image
         const userImage = new Image();
         userImage.src = uploadedImageSrc;
 
@@ -180,13 +183,10 @@
           const boxWidth = canvas.width * 0.25; // 25% of canvas width
           const boxHeight = canvas.height * 0.26; // 26% of canvas height
 
-          // Draw the cropped image into the canvas (behind the orange box)
+          // Draw the cropped image inside the orange box area
           context.drawImage(userImage, boxX, boxY, boxWidth, boxHeight);
 
-          // Draw the template image on top of the cropped image
-          context.drawImage(templateImage, 0, 0, canvas.width, canvas.height);
-
-          // Draw the orange box (on top of both the image and template)
+          // Draw the orange box (on top of the image)
           context.beginPath();
           context.rect(boxX, boxY, boxWidth, boxHeight);
           context.lineWidth = 3;
