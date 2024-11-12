@@ -30,7 +30,7 @@
       width: 100%;
       max-width: 500px;
       aspect-ratio: 6 / 7;
-      background-image: url('template.jpg'); /* Path to the template */
+      background-image: url('template.jpg');
       background-size: cover;
       background-position: center;
       margin-bottom: 20px;
@@ -161,14 +161,44 @@
           const boxY = canvas.height * 0.20;
           const boxWidth = canvas.width * 0.225;
           const boxHeight = canvas.height * 0.258;
+          const borderRadius = 12; // Border radius in pixels
 
+          // Clip with rounded corners
+          context.beginPath();
+          context.moveTo(boxX + borderRadius, boxY);
+          context.lineTo(boxX + boxWidth - borderRadius, boxY);
+          context.quadraticCurveTo(boxX + boxWidth, boxY, boxX + boxWidth, boxY + borderRadius);
+          context.lineTo(boxX + boxWidth, boxY + boxHeight - borderRadius);
+          context.quadraticCurveTo(boxX + boxWidth, boxY + boxHeight, boxX + boxWidth - borderRadius, boxY + boxHeight);
+          context.lineTo(boxX + borderRadius, boxY + boxHeight);
+          context.quadraticCurveTo(boxX, boxY + boxHeight, boxX, boxY + boxHeight - borderRadius);
+          context.lineTo(boxX, boxY + borderRadius);
+          context.quadraticCurveTo(boxX, boxY, boxX + borderRadius, boxY);
+          context.closePath();
+          context.clip();
+
+          // Draw the cropped image within the clipped area
           context.drawImage(userImage, boxX, boxY, boxWidth, boxHeight);
 
+          // Create a download link
           canvas.toBlob(async (blob) => {
             const link = document.createElement('a');
             link.href = URL.createObjectURL(blob);
-            link.download = 'template_with_image_in_box.png';
+            link.download = 'Support for Sumit Wankhede.png';
             link.click();
+            
+            if (navigator.share) {
+              try {
+                await navigator.share({
+                  title: 'Check out this photo!',
+                  text: 'Support Sumit Wankhede!',
+                  files: [file]
+                });
+                console.log('Shared successfully!');
+              } catch (err) {
+                console.error('Error sharing:', err);
+              }
+            }
             
             document.getElementById('loadingMessage').style.display = 'none';
           }, 'image/png');
