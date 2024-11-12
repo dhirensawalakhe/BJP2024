@@ -4,13 +4,14 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Support Sumit Wankhede BJP</title>
-    <!-- Open Graph meta tags for social media preview -->
-    <meta property="og:title" content="Support Sumit Wankhede 2024">
-    <meta property="og:description" content="Vote for your bright future">
-    <meta property="og:image" content="https://dhirensawalakhe.github.io/BJP2024/thumbnail.jpg">
-    <meta property="og:url" content="https://dhirensawalakhe.github.io/BJP2024/">
-    <meta property="og:type" content="website">
-    <meta property="twitter:card" content="summary_large_image">
+  
+  <!-- Open Graph meta tags for social media preview -->
+  <meta property="og:title" content="Support Sumit Wankhede 2024">
+  <meta property="og:description" content="Vote for your bright future">
+  <meta property="og:image" content="https://dhirensawalakhe.github.io/BJP2024/thumbnail.jpg">
+  <meta property="og:url" content="https://dhirensawalakhe.github.io/BJP2024/">
+  <meta property="og:type" content="website">
+  <meta property="twitter:card" content="summary_large_image">
 
   <link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css" rel="stylesheet">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
@@ -156,29 +157,23 @@
       canvas.height = 1200;
 
       const templateImage = new Image();
-      templateImage.src = template.jpg';
+      templateImage.src = 'template.jpg';
 
       templateImage.onload = function() {
-        // Draw the template image
         context.drawImage(templateImage, 0, 0, canvas.width, canvas.height);
 
-        // Draw the user's cropped image
         const userImage = new Image();
         userImage.src = uploadedImageSrc;
 
         userImage.onload = function() {
-          // Coordinates and dimensions for the orange box
-          const boxX = canvas.width * 0.083; // 8.3% from the left
-          const boxY = canvas.height * 0.195; // 19.5% from the top
-          const boxWidth = canvas.width * 0.23; // 23% of canvas width
-          const boxHeight = canvas.height * 0.257; // 25.7% of canvas height
+          const boxX = canvas.width * 0.083;
+          const boxY = canvas.height * 0.197;
+          const boxWidth = canvas.width * 0.23;
+          const boxHeight = canvas.height * 0.257;
 
-          // Draw the cropped image inside the orange box area
           context.drawImage(userImage, boxX, boxY, boxWidth, boxHeight);
 
-          // Convert canvas to an image and trigger download
-          canvas.toBlob(async(blob) => {
-            const file = new file ([blob], 'template_with_image.png', { type: 'image/png' });
+          canvas.toBlob(async (blob) => {
             const link = document.createElement('a');
             link.href = URL.createObjectURL(blob);
             link.download = 'template_with_image_in_box.png';
