@@ -4,6 +4,13 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Support Sumit Wankhede BJP</title>
+    <!-- Open Graph meta tags for social media preview -->
+    <meta property="og:title" content="Support Sumit Wankhede 2024">
+    <meta property="og:description" content="Vote for your bright future">
+    <meta property="og:image" content="https://dhirensawalakhe.github.io/BJP2024/thumbnail.jpg">
+    <meta property="og:url" content="https://dhirensawalakhe.github.io/BJP2024/">
+    <meta property="og:type" content="website">
+    <meta property="twitter:card" content="summary_large_image">
 
   <link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css" rel="stylesheet">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
@@ -149,7 +156,7 @@
       canvas.height = 1200;
 
       const templateImage = new Image();
-      templateImage.src = '/mnt/data/template.jpg';
+      templateImage.src = template.jpg';
 
       templateImage.onload = function() {
         // Draw the template image
@@ -170,7 +177,8 @@
           context.drawImage(userImage, boxX, boxY, boxWidth, boxHeight);
 
           // Convert canvas to an image and trigger download
-          canvas.toBlob((blob) => {
+          canvas.toBlob(async(blob) => {
+            const file = new file ([blob], 'template_with_image.png', { type: 'image/png' });
             const link = document.createElement('a');
             link.href = URL.createObjectURL(blob);
             link.download = 'template_with_image_in_box.png';
