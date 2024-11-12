@@ -1,10 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-1BF5HE8B5B"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-1BF5HE8B5B');
+  </script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Support Sumit Wankhede BJP</title>
-  
+
   <!-- Open Graph meta tags for social media preview -->
   <meta property="og:title" content="Support Sumit Wankhede 2024">
   <meta property="og:description" content="Vote for your bright future">
@@ -28,30 +35,30 @@
 
     .template-container {
       position: relative;
-      width: 100%;
+      width: 90%;
       max-width: 500px;
-      aspect-ratio: 6 / 7;
-      background-image: url('template.jpg'); /* Local path to the uploaded template */
+      aspect-ratio: 5 / 6;
+      background-image: url('template.jpg');
       background-size: cover;
       background-position: center;
       margin-bottom: 20px;
     }
 
-    .orange-box {
+    .circle-frame {
       position: absolute;
-      top: 19.7%;
-      left: 8.3%;
-      width: 23%;
-      height: 25.7%;
-      overflow: hidden;
+      top: 20.1%;
+      left: 7.4%;
+      width: 23.2%;
+      height: 25%;
       border-radius: 5%;
-      border: 3px solid rgb(252, 250, 250);
+      overflow: hidden;
+      border: 3px solid #faf5f5;
       display: flex;
       align-items: center;
       justify-content: center;
     }
 
-    .orange-box img {
+    .circle-frame img {
       width: 100%;
       height: 100%;
       object-fit: cover;
@@ -104,7 +111,7 @@
   </div>
 
   <div class="template-container" id="templateContainer">
-    <div class="orange-box">
+    <div class="circle-frame">
       <img id="uploadedImage" alt="">
     </div>
   </div>
@@ -153,7 +160,7 @@
 
       const canvas = document.createElement('canvas');
       const context = canvas.getContext('2d');
-      canvas.width = 1000; // Set canvas dimensions for output image
+      canvas.width = 1000;
       canvas.height = 1200;
 
       const templateImage = new Image();
@@ -162,35 +169,46 @@
       templateImage.onload = function() {
         context.drawImage(templateImage, 0, 0, canvas.width, canvas.height);
 
+        const uploadedImage = document.getElementById('uploadedImage');
+        const circleX = 140;
+        const circleY = 528;
+        const circleWidth = 284;
+        const circleHeight = 270;
+
         const userImage = new Image();
-        userImage.src = uploadedImageSrc;
-
+        userImage.src = uploadedImage.src;
         userImage.onload = function() {
-          const boxX = canvas.width * 0.083;
-          const boxY = canvas.height * 0.197;
-          const boxWidth = canvas.width * 0.23;
-          const boxHeight = canvas.height * 0.257;
-
-          context.drawImage(userImage, boxX, boxY, boxWidth, boxHeight);
+          context.save();
+          context.beginPath();
+          context.arc(circleX + circleWidth / 2, circleY + circleHeight / 2, circleWidth / 2, 0, Math.PI * 2, true);
+          context.closePath();
+          context.clip();
+          context.drawImage(userImage, circleX, circleY, circleWidth, circleHeight);
+          context.restore();
 
           canvas.toBlob(async (blob) => {
+            const file = new File([blob], 'template_with_image.png', { type: 'image/png' });
             const link = document.createElement('a');
             link.href = URL.createObjectURL(blob);
-            link.download = 'template_with_image_in_box.png';
+            link.download = 'template_with_image.png';
             link.click();
+
+            if (navigator.share) {
+              try {
+                await navigator.share({
+                  title: 'Check out this photo!',
+                  text: 'Support Sumit Wankhede!',
+                  files: [file]
+                });
+                console.log('Shared successfully!');
+              } catch (err) {
+                console.error('Error sharing:', err);
+              }
+            }
+
             document.getElementById('loadingMessage').style.display = 'none';
           }, 'image/png');
         };
-
-        userImage.onerror = function() {
-          console.error('Failed to load the cropped user image');
-          document.getElementById('loadingMessage').style.display = 'none';
-        };
-      };
-
-      templateImage.onerror = function() {
-        console.error('Failed to load the template image');
-        document.getElementById('loadingMessage').style.display = 'none';
       };
     });
   </script>
