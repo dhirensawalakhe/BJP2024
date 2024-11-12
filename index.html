@@ -35,25 +35,61 @@
       background-position: center;
       margin-bottom: 20px;
     }
+     
     .orange-box {
-      position: absolute;
       top: 19.7%;
       left: 8.3%;
       width: 23%;
       height: 25.7%;
+      position: absolute;
       border-radius: 5%;
       overflow: hidden;
-      border: 2px solid rgb(248, 248, 248);
+      border: 2px solid rgb(255, 249, 249);
       display: flex;
       align-items: center;
       justify-content: center;
+    }
+    .left-box,.right-box {
+      position: absolute;
+      border-radius: 5%;
+      overflow: hidden;
+      border: 2px solid rgb(67, 63, 63);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .left-box {
+      top: 54%;
+      left: 2.3%;
+      width: 37%;
+      height: 6%;
+      background-color: #bac8d700;
+      color: #0b0909;
+      font-size: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+    }
+    .right-box {
+      top: 54%;
+      left: 61%;
+      width: 37%;
+      height: 6%;
+      background-color: #bac8d700;
+      color: #000000;
+      font-size: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
     }
     .orange-box img {
       width: 100%;
       height: 100%;
       object-fit: cover;
     }
-    .upload-label, .crop-button, .download-button {
+    .upload-label, .crop-button, .download-button, .name-input {
       margin-top: 15px;
       padding: 10px 20px;
       font-size: 16px;
@@ -61,6 +97,16 @@
       background-color: #007bff;
       color: #fff;
       border-radius: 5px;
+    }
+    .name-input {
+      margin-top: 15px;
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+      background-color: #f0f2f4;
+      color: #171010;
+      border-radius: 5px;
+      outline: auto;
     }
     .crop-container img {
       max-width: 100%;
@@ -91,6 +137,8 @@
   <button class="crop-button" id="cropButton" style="display: none;">Crop & Place Image</button>
   <button class="download-button" id="downloadButton" style="display: none;">Download Template</button>
 
+  <input type="text" class="name-input" id="nameInput" placeholder="        Enter Your Name">
+
   <div class="crop-container" id="cropContainer">
     <img id="cropImage" alt="Crop your photo">
   </div>
@@ -99,6 +147,8 @@
     <div class="orange-box">
       <img id="uploadedImage" alt="">
     </div>
+    <div class="left-box" id="nameBox">Your Name</div> 
+    <div class="right-box" id="name"> Sumit Wankhede</div>
   </div>
 
   <div class="loading-message" id="loadingMessage">Processing your image...</div>
@@ -140,6 +190,10 @@
       document.getElementById('downloadButton').style.display = 'inline-block';
     });
 
+    document.getElementById('nameInput').addEventListener('input', function() {
+      document.getElementById('nameBox').textContent = this.value || 'Your Name';
+    });
+
     document.getElementById('downloadButton').addEventListener('click', function() {
       document.getElementById('loadingMessage').style.display = 'block';
 
@@ -153,6 +207,7 @@
 
       templateImage.onload = function() {
         context.drawImage(templateImage, 0, 0, canvas.width, canvas.height);
+
         const userImage = new Image();
         userImage.src = uploadedImageSrc;
 
@@ -161,24 +216,25 @@
           const boxY = canvas.height * 0.20;
           const boxWidth = canvas.width * 0.225;
           const boxHeight = canvas.height * 0.258;
-          const borderRadius = 12; // Border radius in pixels
 
-          // Clip with rounded corners
-          context.beginPath();
-          context.moveTo(boxX + borderRadius, boxY);
-          context.lineTo(boxX + boxWidth - borderRadius, boxY);
-          context.quadraticCurveTo(boxX + boxWidth, boxY, boxX + boxWidth, boxY + borderRadius);
-          context.lineTo(boxX + boxWidth, boxY + boxHeight - borderRadius);
-          context.quadraticCurveTo(boxX + boxWidth, boxY + boxHeight, boxX + boxWidth - borderRadius, boxY + boxHeight);
-          context.lineTo(boxX + borderRadius, boxY + boxHeight);
-          context.quadraticCurveTo(boxX, boxY + boxHeight, boxX, boxY + boxHeight - borderRadius);
-          context.lineTo(boxX, boxY + borderRadius);
-          context.quadraticCurveTo(boxX, boxY, boxX + borderRadius, boxY);
-          context.closePath();
-          context.clip();
-
-          // Draw the cropped image within the clipped area
+          // Clip and draw user image
           context.drawImage(userImage, boxX, boxY, boxWidth, boxHeight);
+
+          // Add user name text
+          context.font = 'bold 36px Arial';
+          context.fillStyle = '#000000';
+          context.textAlign = 'center';
+          const nameX = canvas.width * 0.2;
+          const nameY = canvas.height * 0.57;
+          const userName = document.getElementById('nameBox').textContent;
+          
+          context.fillStyle='#000000';
+          context.fillText('        Sumit Wankhede', canvas.width*0.75,canvas.height*0.57)
+          context.textAlign ="center";
+          // Ensure the name is set and drawn on the canvas
+          if (userName.trim()) {
+            context.fillText(userName, nameX, nameY);
+          }
 
           // Create a download link
           canvas.toBlob(async (blob) => {
@@ -191,12 +247,10 @@
                   text: 'Check out this image!',
                   files: [file]
                 });
-                console.log('Shared successfully!');
               } catch (err) {
                 console.error('Error sharing:', err);
               }
             } else {
-              // Fallback for browsers that don't support sharing
               const link = document.createElement('a');
               link.href = URL.createObjectURL(blob);
               link.download = 'Support for Sumit Wankhede.png';
@@ -206,16 +260,6 @@
             document.getElementById('loadingMessage').style.display = 'none';
           }, 'image/png');
         };
-
-        userImage.onerror = function() {
-          console.error('Failed to load the cropped user image');
-          document.getElementById('loadingMessage').style.display = 'none';
-        };
-      };
-
-      templateImage.onerror = function() {
-        console.error('Failed to load the template image');
-        document.getElementById('loadingMessage').style.display = 'none';
       };
     });
   </script>
