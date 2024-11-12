@@ -16,7 +16,69 @@
   <link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css" rel="stylesheet">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
   <style>
-    /* Your existing CSS styles here */
+    body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      padding: 20px;
+      text-align: center;
+    }
+    .template-container {
+      position: relative;
+      width: 100%;
+      max-width: 500px;
+      aspect-ratio: 6 / 7;
+      background-image: url('template.jpg');
+      background-size: cover;
+      background-position: center;
+      margin-bottom: 20px;
+    }
+    .orange-box {
+      position: absolute;
+      top: 19.7%;
+      left: 8.3%;
+      width: 23%;
+      height: 25.7%;
+      border-radius: 5%;
+      overflow: hidden;
+      border: 2px solid rgb(248, 248, 248);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .orange-box img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .upload-label, .crop-button, .download-button {
+      margin-top: 15px;
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+      background-color: #007bff;
+      color: #fff;
+      border-radius: 5px;
+    }
+    .crop-container img {
+      max-width: 100%;
+    }
+    .crop-container {
+      display: none;
+      width: 90%;
+      max-width: 400px;
+    }
+    .loading-message {
+      display: none;
+      font-size: 18px;
+      color: #333;
+      margin-top: 20px;
+    }
+    input[type="file"] {
+      display: none;
+    }
   </style>
 </head>
 <body>
@@ -44,11 +106,10 @@
   <script>
     let cropper;
     let uploadedImageSrc = "";
-    let uploadedFile;
 
     document.getElementById('fileInput').addEventListener('change', function(event) {
-      uploadedFile = event.target.files[0]; // Store the file object
-      if (uploadedFile) {
+      const file = event.target.files[0];
+      if (file) {
         const reader = new FileReader();
         reader.onload = function(e) {
           document.getElementById('cropImage').src = e.target.result;
@@ -62,7 +123,7 @@
             autoCropArea: 1
           });
         };
-        reader.readAsDataURL(uploadedFile);
+        reader.readAsDataURL(file);
       }
     });
 
@@ -100,7 +161,7 @@
           const boxY = canvas.height * 0.20;
           const boxWidth = canvas.width * 0.225;
           const boxHeight = canvas.height * 0.258;
-          const borderRadius = 12;
+          const borderRadius = 12; // Border radius in pixels
 
           // Clip with rounded corners
           context.beginPath();
@@ -121,24 +182,27 @@
 
           // Create a download link
           canvas.toBlob(async (blob) => {
-            const link = document.createElement('a');
-            link.href = URL.createObjectURL(blob);
-            link.download = 'Support for Sumit Wankhede.png';
-            link.click();
-            
+            const file = new File([blob], 'Support for Sumit Wankhede.png', { type: 'image/png' });
+
             if (navigator.share) {
               try {
                 await navigator.share({
-                  title: 'Check out this photo!',
-                  text: 'Support Sumit Wankhede!',
-                  files: [new File([blob], 'Support for Sumit Wankhede.png', {type: 'image/png'})]
+                  title: 'Support Sumit Wankhede',
+                  text: 'Check out this image!',
+                  files: [file]
                 });
                 console.log('Shared successfully!');
               } catch (err) {
                 console.error('Error sharing:', err);
               }
+            } else {
+              // Fallback for browsers that don't support sharing
+              const link = document.createElement('a');
+              link.href = URL.createObjectURL(blob);
+              link.download = 'Support for Sumit Wankhede.png';
+              link.click();
             }
-            
+
             document.getElementById('loadingMessage').style.display = 'none';
           }, 'image/png');
         };
