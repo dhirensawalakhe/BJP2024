@@ -70,6 +70,13 @@
       align-items: center;
       justify-content: center;
       font-weight: bold;
+      white-space: normal;
+      word-wrap: break-word;  /* Allows wrapping if the name is too long */
+      overflow: hidden;       /* Prevents overflow of text */
+      text-overflow: ellipsis;/* Adds ellipsis if text is too long */
+      padding: 5px;
+      max-width: 100%;
+      box-sizing: border-box;
     }
     .right-box {
       top: 54%;
@@ -191,77 +198,93 @@
     });
 
     document.getElementById('nameInput').addEventListener('input', function() {
-      document.getElementById('nameBox').textContent = this.value || 'Your Name';
+      const nameBox = document.getElementById('nameBox');
+      const userName = this.value || 'Your Name';
+      nameBox.textContent = userName;
+
+// Dynamically adjust font size based on name length
+const maxWidth = nameBox.offsetWidth;
+let fontSize = 18; // Default font size
+
+// Adjust font size dynamically if text overflows
+while (nameBox.scrollWidth > maxWidth && fontSize > 10) {
+  fontSize -= 1; // Decrease font size to make it fit
+  nameBox.style.fontSize = fontSize + 'px';
+}
     });
 
     document.getElementById('downloadButton').addEventListener('click', function() {
-      document.getElementById('loadingMessage').style.display = 'block';
+  document.getElementById('loadingMessage').style.display = 'block';
 
-      const canvas = document.createElement('canvas');
-      const context = canvas.getContext('2d');
-      canvas.width = 1000;
-      canvas.height = 1200;
+  const canvas = document.createElement('canvas');
+  const context = canvas.getContext('2d');
+  canvas.width = 1000;
+  canvas.height = 1200;
 
-      const templateImage = new Image();
-      templateImage.src = 'template.jpg';
+  const templateImage = new Image();
+  templateImage.src = 'template.jpg';
 
-      templateImage.onload = function() {
-        context.drawImage(templateImage, 0, 0, canvas.width, canvas.height);
+  templateImage.onload = function() {
+    context.drawImage(templateImage, 0, 0, canvas.width, canvas.height);
 
-        const userImage = new Image();
-        userImage.src = uploadedImageSrc;
+    const userImage = new Image();
+    userImage.src = uploadedImageSrc;
 
-        userImage.onload = function() {
-          const boxX = canvas.width * 0.104;
-          const boxY = canvas.height * 0.20;
-          const boxWidth = canvas.width * 0.225;
-          const boxHeight = canvas.height * 0.258;
+    userImage.onload = function() {
+      const boxX = canvas.width * 0.104; // Orange box X position
+      const boxY = canvas.height * 0.20; // Orange box Y position
+      const boxWidth = canvas.width * 0.225; // Orange box width
+      const boxHeight = canvas.height * 0.258; // Orange box height
 
-          // Clip and draw user image
-          context.drawImage(userImage, boxX, boxY, boxWidth, boxHeight);
+      // Clip and draw user image
+      context.drawImage(userImage, boxX, boxY, boxWidth, boxHeight);
 
-          // Add user name text
-          context.font = 'bold 36px Arial';
-          context.fillStyle = '#000000';
-          context.textAlign = 'center';
-          const nameX = canvas.width * 0.2;
-          const nameY = canvas.height * 0.57;
-          const userName = document.getElementById('nameBox').textContent;
-          
-          context.fillStyle='#000000';
-          context.fillText('        Sumit Wankhede', canvas.width*0.75,canvas.height*0.57)
-          context.textAlign ="center";
-          // Ensure the name is set and drawn on the canvas
-          if (userName.trim()) {
-            context.fillText(userName, nameX, nameY);
+      // Add user name text inside the left-box
+      const nameBox = document.getElementById('nameBox');
+      const userName = nameBox.textContent.trim() || 'Your Name'; // Get the input name or default
+
+      const nameX = canvas.width * 0.2; // Left box X position
+      const nameY = canvas.height * 0.57; // Left box Y position
+      const maxWidth = canvas.width * 0.37; // Left box max width
+     
+
+      // Set font size dynamically if text is too long
+      context.font = 'bold 36px Arial';
+      context.fillStyle = '#000000';
+      context.textAlign = 'center';
+      context.fillText(userName, nameX, nameY, maxWidth); // Ensure text stays within the box
+
+      context.font = 'bold 36px Arial';
+      context.fillStyle='#000000';
+      context.fillText('      Sumit Wankhede', canvas.width*0.75,canvas.height*0.57)
+      context.textAlign ="center";
+      // Create a download link
+      canvas.toBlob(async (blob) => {
+        const file = new File([blob], 'Support for Sumit Wankhede.png', { type: 'image/png' });
+
+        if (navigator.share) {
+          try {
+            await navigator.share({
+              title: 'Support Sumit Wankhede',
+              text: 'Check out this image!',
+              files: [file]
+            });
+          } catch (err) {
+            console.error('Error sharing:', err);
           }
+        } else {
+          const link = document.createElement('a');
+          link.href = URL.createObjectURL(blob);
+          link.download = 'Support for Sumit Wankhede.png';
+          link.click();
+        }
 
-          // Create a download link
-          canvas.toBlob(async (blob) => {
-            const file = new File([blob], 'Support for Sumit Wankhede.png', { type: 'image/png' });
+        document.getElementById('loadingMessage').style.display = 'none';
+      }, 'image/png');
+    };
+  };
+});
 
-            if (navigator.share) {
-              try {
-                await navigator.share({
-                  title: 'Support Sumit Wankhede',
-                  text: 'Check out this image!',
-                  files: [file]
-                });
-              } catch (err) {
-                console.error('Error sharing:', err);
-              }
-            } else {
-              const link = document.createElement('a');
-              link.href = URL.createObjectURL(blob);
-              link.download = 'Support for Sumit Wankhede.png';
-              link.click();
-            }
-
-            document.getElementById('loadingMessage').style.display = 'none';
-          }, 'image/png');
-        };
-      };
-    });
   </script>
 
 </body>
